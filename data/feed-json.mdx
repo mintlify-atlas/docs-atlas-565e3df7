@@ -1,0 +1,140 @@
+---
+title: 'feed.json: Machine-Readable Developer Portfolio Data Feed'
+description: 'Explore the feed.json data export — schema, field definitions, a full example, and ready-to-run consumption snippets in Python and JavaScript.'
+---
+
+The `feed.json` file is a machine-readable export of every developer portfolio listed in the project. It is automatically regenerated whenever `README.md` changes, giving downstream tools a stable, structured data source without requiring them to parse Markdown. You can use it to build portfolio aggregators, discovery tools, statistics dashboards, or search indexes.
+
+## Schema
+
+Each object in the array represents one portfolio entry. The array is ordered alphabetically by developer name, matching the order in `README.md`.
+
+<ResponseField name="name" type="string" required>
+  The developer's full name as it appears in the README. Names are stored in title case (e.g., `"Brittany Chiang"`, not `"brittany chiang"`).
+</ResponseField>
+
+<ResponseField name="url" type="string" required>
+  The canonical URL of the developer's portfolio website. Trailing slashes are normalized away during generation. Always an absolute URL starting with `http://` or `https://`.
+</ResponseField>
+
+<ResponseField name="tagline" type="string">
+  An optional short description of the developer's title, expertise, or focus area (e.g., `"Software Developer & DevOps Architect"`). This field is only present when the README entry includes a bracketed description after the link.
+</ResponseField>
+
+## Example
+
+```json feed.json
+[
+  {
+    "name": "Brittany Chiang",
+    "url": "https://brittanychiang.com"
+  },
+  {
+    "name": "Ahmad Awais",
+    "url": "https://ahmadawais.com"
+  },
+  {
+    "name": "Aditya Seth",
+    "url": "https://adityaseth.in",
+    "tagline": "Software Developer & DevOps Architect"
+  },
+  {
+    "name": "Ali Connors",
+    "url": "https://aliconnors.dev",
+    "tagline": "Frontend Engineer"
+  }
+]
+```
+
+<Note>
+  Entries without a `tagline` in the README will not have that key in the JSON object at all — it is omitted entirely rather than set to `null`.
+</Note>
+
+## How feed.json is generated
+
+The file is produced by parsing `README.md` line-by-line and extracting Markdown links that match the portfolio list format. Two scripts can produce it:
+
+- **`src/alphabetical.py`** — the primary automation script. It normalizes and sorts the README, then writes `feed.json` as its final step. Run this script when you want to both clean the README and regenerate the feed.
+- **`src/generate_feed.py`** — a standalone script that only reads `README.md` and writes `feed.json`, without modifying the README. Use this when you need to regenerate the feed without touching any other content.
+
+The parser matches lines using this pattern:
+
+```
+- [Name](url)
+- [Name](url) [tagline]
+```
+
+Any line not matching this format is silently skipped.
+
+```bash
+# Regenerate feed.json via the full automation pipeline
+python src/alphabetical.py
+
+# Regenerate feed.json only, without modifying README.md
+python src/generate_feed.py
+```
+
+<Tip>
+  In CI, `src/alphabetical.py` runs automatically on every pull request merge. You rarely need to run these scripts manually unless you are developing locally.
+</Tip>
+
+## Consuming feed.json
+
+The examples below show how to fetch and work with the feed from any environment that can read a local file or make an HTTP request.
+
+<CodeGroup>
+
+```python fetch_feed.py
+import json
+
+# Read from a local clone
+with open("feed.json", "r", encoding="utf-8") as f:
+    portfolios = json.load(f)
+
+# Iterate over all entries
+for portfolio in portfolios:
+    name = portfolio["name"]
+    url = portfolio["url"]
+    tagline = portfolio.get("tagline", "")  # tagline may be absent
+    print(f"{name}: {url}" + (f" — {tagline}" if tagline else ""))
+
+# Filter entries that have a tagline
+tagged = [p for p in portfolios if "tagline" in p]
+print(f"{len(tagged)} portfolios have a tagline out of {len(portfolios)} total")
+```
+
+```javascript fetchFeed.js
+import { readFileSync } from 'fs';
+
+// Read from a local clone
+const portfolios = JSON.parse(readFileSync('feed.json', 'utf-8'));
+
+// Iterate over all entries
+for (const { name, url, tagline } of portfolios) {
+  const description = tagline ? ` — ${tagline}` : '';
+  console.log(`${name}: ${url}${description}`);
+}
+
+// Filter entries that have a tagline
+const tagged = portfolios.filter(p => p.tagline !== undefined);
+console.log(`${tagged.length} portfolios have a tagline out of ${portfolios.length} total`);
+```
+
+</CodeGroup>
+
+## Use cases
+
+<CardGroup cols={2}>
+  <Card title="Portfolio aggregators" icon="layer-group">
+    Ingest the feed on a schedule to keep an aggregator site or API in sync with the latest additions without scraping Markdown.
+  </Card>
+  <Card title="Search indexes" icon="magnifying-glass">
+    Index `name`, `url`, and `tagline` fields in a search engine (e.g., Algolia, MeiliSearch) to power portfolio discovery.
+  </Card>
+  <Card title="Statistics and analytics" icon="chart-bar">
+    Count entries, analyze tagline frequency, audit for broken links, or track how the list grows over time.
+  </Card>
+  <Card title="Developer tools and CLIs" icon="terminal">
+    Build CLI tools that pull the feed, filter by tagline keyword, and open matching portfolios in a browser.
+  </Card>
+</CardGroup>

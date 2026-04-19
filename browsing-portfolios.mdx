@@ -1,0 +1,154 @@
+---
+title: "Browsing Developer Portfolios: Navigation and Search Tips"
+description: "Navigate 1,628+ portfolios alphabetically on GitHub, search by role or specialty, use the random picker, or fetch feed.json for programmatic access."
+---
+
+The canonical portfolio list lives in the `README.md` file of the [emmabostian/developer-portfolios](https://github.com/emmabostian/developer-portfolios) GitHub repository. It is a plain Markdown file — no account required, no filters to configure. Every portfolio added by the community appears there, sorted alphabetically from A to Z.
+
+## Understanding the entry format
+
+Each line in the list follows this structure:
+
+```text
+- [Developer Name](https://portfolio-url.com) [Optional tagline]
+```
+
+The name and URL are always present. The tagline in square brackets is optional — contributors add it to describe their role, specialty, or technology focus.
+
+Here are real examples showing the three formats you will encounter:
+
+```text
+- [Brittany Chiang](https://brittanychiang.com)
+- [Ahmad Awais](https://ahmadawais.com)
+- [Aditya Seth](https://adityaseth.in) [Software Developer & DevOps Architect]
+```
+
+<Note>
+  The tagline text is freeform — contributors write whatever describes them best. Common examples include `[Frontend Engineer]`, `[Full Stack Developer]`, `[iOS Developer]`, `[Animated]`, and longer descriptions like `[UX Designer & React Developer]`.
+</Note>
+
+## How to navigate the list
+
+<Steps>
+  <Step title="Open the README on GitHub">
+    Go to [github.com/emmabostian/developer-portfolios](https://github.com/emmabostian/developer-portfolios) and scroll past the top matter to reach the portfolio list.
+  </Step>
+  <Step title="Use the alphabetical jump links">
+    Near the top of the README, there is a row of letter links:
+
+    ```text
+    A | B | C | D | E | F | G | H | I | J | K | L | M |
+    N | O | P | Q | R | S | T | U | V | W | X | Y | Z
+    ```
+
+    Click any letter to jump directly to that section. Each section is headed by a Markdown `##` header for that letter. This is the fastest way to find a specific developer when you know their name.
+  </Step>
+  <Step title="Scroll or use browser search">
+    Within a letter section, entries are sorted alphabetically by first name. Use your browser's built-in find (`Ctrl+F` or `Cmd+F`) to search for a specific name, URL fragment, or keyword from a tagline — for example, searching `DevOps` or `iOS` will highlight every matching entry.
+  </Step>
+</Steps>
+
+## Ways to browse
+
+<Tabs>
+  <Tab title="By letter">
+    The jump-link index at the top of the README links to anchor headings for each letter. Click the letter of the developer's first name to jump to that section and scroll through the entries.
+
+    This works well when you know roughly whose work you want to find, or when you want to browse all entries for a particular letter at a time.
+  </Tab>
+  <Tab title="By role or specialty">
+    Use browser find (`Ctrl+F` / `Cmd+F`) and search for a role keyword. Because taglines are freeform, you may need to try a few variations:
+
+    - `iOS` — finds iOS developers
+    - `React` — finds developers who list React in their tagline
+    - `DevOps` — finds DevOps engineers
+    - `Designer` — finds designers and UX/UI specialists
+    - `Animated` — some entries use this tag to flag portfolios with animation-heavy design
+
+    <Tip>
+      Taglines are not standardized, so `Frontend` and `Front-End` and `Front End` may all appear. Try multiple spellings if your first search returns few results.
+    </Tip>
+  </Tab>
+  <Tab title="Random portfolio">
+    If you want to discover portfolios without searching, use the [Random Portfolio redirector](https://s111ew.github.io/random-button-redirector). It picks a random entry from the list and redirects you directly to that developer's portfolio site.
+
+    This is a good way to get inspired when you are not looking for anything specific — each click shows you a different portfolio.
+  </Tab>
+  <Tab title="Programmatic access">
+    If you are building a tool, a search interface, or a statistics dashboard, parse `feed.json` instead of the Markdown.
+
+    ```bash
+    curl https://raw.githubusercontent.com/emmabostian/developer-portfolios/master/feed.json
+    ```
+
+    The feed is regenerated automatically on every merge, so it stays in sync with the `README.md`. See the [feed.json reference](/data/feed-json) for the full schema.
+  </Tab>
+</Tabs>
+
+## Using feed.json for programmatic access
+
+The repository auto-generates a `feed.json` file from the `README.md` on every contribution merge. It provides the same data as the Markdown list in a structured format that is easier to query, filter, and integrate.
+
+```json
+[
+  {
+    "name": "Aditya Seth",
+    "url": "https://adityaseth.in",
+    "tagline": "Software Developer & DevOps Architect"
+  },
+  {
+    "name": "Ahmad Awais",
+    "url": "https://ahmadawais.com"
+  }
+]
+```
+
+<Note>
+  The `tagline` key is omitted entirely for entries that have no tagline — it is not set to `null`. Always use a presence check (e.g., `"tagline" in portfolio`) rather than a null check.
+</Note>
+
+Use cases for `feed.json`:
+
+- Building a searchable portfolio directory
+- Generating statistics (how many entries per letter, how many have taglines)
+- Creating a random portfolio picker
+- Seeding a design inspiration tool
+
+<CardGroup cols={2}>
+  <Card title="feed.json reference" icon="database" href="/data/feed-json">
+    Full schema documentation, field descriptions, and example queries.
+  </Card>
+  <Card title="Automation scripts" icon="robot" href="/data/automation-scripts">
+    How the feed is generated and what the Python scripts do on merge.
+  </Card>
+</CardGroup>
+
+## Tips for finding inspiration
+
+<AccordionGroup>
+  <Accordion title="Look for animated portfolios">
+    Search for `Animated` in the README. Some contributors flag their portfolios with this term specifically because the design relies heavily on motion, transitions, or interactive effects. These entries are good benchmarks if you are considering adding animation to your own site.
+  </Accordion>
+  <Accordion title="Filter by technology">
+    Search for technology keywords in taglines: `Vue`, `Next.js`, `Three.js`, `WebGL`, `Swift`. This surfaces developers who have chosen to highlight a specific technology, which can be useful when you want to see how that technology is used in real portfolio sites.
+  </Accordion>
+  <Accordion title="Browse by discipline">
+    Taglines like `[UX Designer]`, `[Data Scientist]`, `[Mobile Developer]`, and `[Game Developer]` are scattered throughout the list. Browsing by discipline helps you find portfolios that face the same audience as yours — a design portfolio will make different choices than a backend engineering portfolio.
+  </Accordion>
+  <Accordion title="Check multiple pages of a single developer">
+    Some portfolios include case studies, blog posts, or project sub-pages that are worth exploring beyond the home page. After landing on a portfolio you like, spend a few minutes clicking through the site before moving on.
+  </Accordion>
+</AccordionGroup>
+
+## Add your own portfolio
+
+If you want your portfolio to appear in the list, open a pull request. The process takes about five minutes and the automation handles sorting and deduplication for you.
+
+<CardGroup cols={2}>
+  <Card title="How to contribute" icon="code-pull-request" href="/contributing/how-to-contribute">
+    Step-by-step instructions for forking, editing, and opening a pull request.
+  </Card>
+  <Card title="Submission format" icon="pen-to-square" href="/contributing/submission-format">
+    The exact Markdown format your entry must use to pass validation.
+  </Card>
+</CardGroup>

@@ -1,0 +1,186 @@
+---
+title: 'Automation Scripts: alphabetical.py and generate_feed.py'
+description: 'How alphabetical.py and generate_feed.py automate README normalization, deduplication, alphabetical sorting, and feed.json generation for Developer Portfolios.'
+---
+
+As the portfolio list grows into the hundreds, keeping `README.md` consistent by hand becomes error-prone. Automation scripts enforce formatting rules on every contribution: names are title-cased, duplicates are removed, entries are sorted into the correct alphabetical section, and `feed.json` is regenerated — all without manual review.
+
+## Scripts overview
+
+<CardGroup cols={2}>
+  <Card title="alphabetical.py" icon="arrow-up-a-z" href="/data/automation-scripts#alphabeticalpy">
+    The primary pipeline. Normalizes the README, sorts entries, removes duplicates, and writes `feed.json`.
+  </Card>
+  <Card title="generate_feed.py" icon="file-code" href="/data/automation-scripts#generate_feedpy">
+    Standalone feed generator. Reads `README.md` and writes `feed.json` without modifying the README.
+  </Card>
+</CardGroup>
+
+## alphabetical.py
+
+`src/alphabetical.py` is the main automation script. It reads `README.md`, applies a series of normalization and cleanup steps, writes the cleaned README back to disk, and then calls the same logic as `generate_feed.py` to produce `feed.json`.
+
+### Running the script
+
+```bash
+python src/alphabetical.py
+```
+
+Run this from the repository root. The script reads `README.md` in the current directory and overwrites it in place.
+
+<Warning>
+  The script modifies `README.md` directly. Commit or stash any uncommitted changes before running it locally if you want a clean diff.
+</Warning>
+
+### Pipeline steps
+
+The `main()` function executes the following steps in order:
+
+<Steps>
+  <Step title="Read README.md">
+    The script loads the full contents of `README.md` into memory as a list of lines. All subsequent operations work on this in-memory representation until the final write.
+  </Step>
+
+  <Step title="Convert names to title case">
+    The `convert_to_title_case()` function applies title casing to the bracketed link text in every Markdown link. For example, `[john doe](https://example.com)` becomes `[John Doe](https://example.com)`. This ensures the list renders with consistent capitalization regardless of how contributors submit entries.
+
+    ```python
+    def convert_to_title_case(readme_text):
+        """Title-case the bracketed link text in Markdown links."""
+        ...
+    ```
+  </Step>
+
+  <Step title="Trim trailing spaces inside bracketed text">
+    Whitespace inside `[Name ]` link text is stripped to prevent subtle formatting inconsistencies that would cause the same name to sort differently or appear twice.
+  </Step>
+
+  <Step title="Normalize Full-Stack variants">
+    All common spellings of "Full-Stack" (e.g., `Full Stack`, `Fullstack`, `full-stack`) are normalized to the canonical form `Full Stack` in both link text and taglines. This prevents near-duplicate entries from appearing in the sorted list.
+  </Step>
+
+  <Step title="Remove duplicate URLs">
+    The `remove_duplicate_urls()` function scans all portfolio links and removes any entry whose URL (after normalization) has already appeared earlier in the file. The first occurrence is always kept.
+
+    ```python
+    def remove_duplicate_urls(lines):
+        """Remove later occurrences of the same normalized URL, keep first."""
+        ...
+    ```
+  </Step>
+
+  <Step title="Remove exact duplicate lines">
+    Adjacent lines that are byte-for-byte identical are collapsed to a single line. This catches copy-paste duplicates that survive the URL deduplication step because their link text differs.
+  </Step>
+
+  <Step title="Validate and fix alphabetical section placement">
+    The `validate_section_placement()` function checks that each entry belongs under the correct `## A`, `## B`, … `## Z` heading based on the first letter of the developer's name. Misplaced entries are moved to their correct section automatically.
+
+    ```python
+    def validate_section_placement(lines):
+        """Validate entries are in the correct alphabetical section. Move misplaced entries."""
+        ...
+    ```
+  </Step>
+
+  <Step title="Sort entries within each section">
+    The `sort_lists_alphabetically()` function sorts all portfolio entries within each alphabetical section in case-insensitive ascending order. Entries with emoji in their names are handled by `has_emoji()` and `remove_emoji_from_lines()` so that emoji do not affect sort order.
+
+    ```python
+    def sort_lists_alphabetically(lines):
+        """Sorts portfolio entries within each alphabetical section."""
+        ...
+
+    def has_emoji(text):
+        """Return True if text contains any emoji-like character."""
+        ...
+
+    def remove_emoji_from_lines(lines):
+        """Remove emoji characters from link text and adjacent descriptions."""
+        ...
+    ```
+  </Step>
+
+  <Step title="Remove adjacent exact duplicate links">
+    A final pass with `remove_exact_duplicate_links()` removes cases where both the link text and the URL of two adjacent entries match exactly — a safety net for duplicates that survive earlier steps.
+
+    ```python
+    def remove_exact_duplicate_links(lines):
+        """Remove adjacent duplicate links where both [text] and (link) match."""
+        ...
+    ```
+  </Step>
+
+  <Step title="Write README.md back to disk">
+    The cleaned list of lines is written back to `README.md`, overwriting the previous version.
+  </Step>
+
+  <Step title="Generate feed.json">
+    As a final step, `alphabetical.py` calls the same feed-generation logic used by `generate_feed.py` to parse the freshly cleaned `README.md` and write `feed.json`.
+  </Step>
+</Steps>
+
+## generate_feed.py
+
+`src/generate_feed.py` is a focused script that only produces `feed.json`. It does not modify `README.md`. Use it when you want to regenerate the data feed without touching any other file.
+
+```bash
+python src/generate_feed.py
+```
+
+Internally it calls `create_feed_json()`, which reads the README, extracts portfolio entries with `extract_portfolio_data()`, and serializes them to JSON:
+
+```python
+def extract_portfolio_data(lines):
+    """
+    Extract portfolio data from README lines.
+    Returns a list of dictionaries with name, url, and optional tagline.
+
+    Format expected:
+    - [Name](url)
+    - [Name](url) [tagline]
+    """
+    portfolios = []
+    pattern = re.compile(r'^-\s+\[([^\]]+)\]\(([^)]+)\)(?:\s+\[([^\]]*)\])?')
+
+    for line in lines:
+        match = pattern.match(line.strip())
+        if match:
+            name = match.group(1).strip()
+            url = match.group(2).strip()
+            tagline = match.group(3).strip() if match.group(3) else None
+
+            portfolio_entry = {"name": name, "url": url}
+            if tagline:
+                portfolio_entry["tagline"] = tagline
+
+            portfolios.append(portfolio_entry)
+
+    return portfolios
+
+
+def create_feed_json(readme_path="README.md", output_path="feed.json"):
+    """
+    Read README.md and create/update feed.json with portfolio data.
+    Returns the number of portfolios extracted.
+    """
+    ...
+```
+
+<Note>
+  The `tagline` key is only added to an entry's object when a tagline is present. Entries without a tagline produce objects with only `name` and `url`.
+</Note>
+
+## When scripts run
+
+| Trigger | Script |
+|---|---|
+| Pull request merged to `master` | `src/alphabetical.py` (via CI) |
+| Manual local development | `python src/alphabetical.py` |
+| Feed-only regeneration | `python src/generate_feed.py` |
+
+CI runs `src/alphabetical.py` automatically on every merge so that the README and `feed.json` are always in a consistent state regardless of whether contributors ran the script locally before submitting their PR.
+
+<Tip>
+  If you are contributing a new portfolio entry, you do not need to run these scripts yourself. CI will normalize your entry automatically after your PR is merged.
+</Tip>

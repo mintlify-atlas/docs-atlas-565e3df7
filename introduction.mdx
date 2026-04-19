@@ -1,0 +1,80 @@
+---
+title: "Developer Portfolios: How It Works and What's Inside"
+description: "Learn what Developer Portfolios is, how it started, how the community maintains it, and what each entry contains. Over 1,628 real portfolios and growing."
+---
+
+Developer Portfolios is an open-source, community-maintained list of over 1,628 developer portfolio websites. It lives in a single GitHub repository as an alphabetically sorted `README.md` file, where each line links to a real developer's portfolio — sometimes with a short tagline describing their specialty. If you are building, redesigning, or simply curious about how other developers present themselves, this list is the fastest way to see hundreds of real examples in one place.
+
+## The backstory
+
+The project was created by [Emma Bostian](https://github.com/emmabostian) after developer and author Ali Spittel tweeted asking for examples of strong developer portfolios. The response made clear there was no single place to collect and share them. Emma created the repository to fill that gap, and the community took it from there.
+
+What started as a handful of links has grown into one of the most-referenced portfolio lists on GitHub, with contributors from around the world adding their own work or nominating portfolios they admire.
+
+## What is in the list
+
+The list is a single Markdown file. Each entry follows a consistent format:
+
+```text
+- [Developer Name](https://portfolio-url.com) [Optional tagline]
+```
+
+Every entry has:
+
+- **Name** — the developer's name, used as the link text
+- **URL** — a direct link to their portfolio site
+- **Tagline** *(optional)* — a short description in brackets, typically a role, specialty, or technology focus
+
+<Note>
+  Not every entry has a tagline. Many developers list their URL alone, while others add labels like `[Frontend Engineer]`, `[iOS Developer]`, or `[Software Developer & DevOps Architect]`.
+</Note>
+
+Here are three examples showing the range of formats:
+
+```text
+- [Brittany Chiang](https://brittanychiang.com)
+- [Ahmad Awais](https://ahmadawais.com)
+- [Aditya Seth](https://adityaseth.in) [Software Developer & DevOps Architect]
+```
+
+## How the list stays accurate
+
+The list is maintained through a combination of community pull requests and automated tooling. When a contributor opens a pull request to add a new portfolio, Python scripts run automatically on merge to:
+
+- **Sort** all entries alphabetically by last name within each letter section
+- **Deduplicate** entries so no URL appears twice
+- **Normalize** formatting to keep the Markdown consistent
+
+This means contributors do not need to worry about inserting their entry in exactly the right position — the automation handles it. A `feed.json` file is also regenerated automatically from the `README.md` on every merge, making all entries available as structured data.
+
+<Tip>
+  If you want to use the portfolio data programmatically — for a search tool, a random redirector, or a statistics project — consume `feed.json` rather than parsing the Markdown yourself. See the [feed.json reference](/data/feed-json) for the schema and usage.
+</Tip>
+
+## Stats at a glance
+
+| Fact | Detail |
+|------|--------|
+| Total entries | 1,628+ |
+| Organization | Alphabetical, A–Z |
+| License | Open source |
+| Automation | Python scripts on merge |
+| Machine-readable | `feed.json` auto-generated |
+| Contributions | Via GitHub pull request |
+
+## Where to go next
+
+<CardGroup cols={2}>
+  <Card title="Browse the portfolios" icon="list" href="/browsing-portfolios">
+    Learn how to navigate the alphabetical list, use jump links, and find portfolios by role or specialty.
+  </Card>
+  <Card title="Add your portfolio" icon="plus" href="/contributing/how-to-contribute">
+    Open a pull request to submit your own portfolio. Takes about five minutes.
+  </Card>
+  <Card title="Submission format" icon="pen-to-square" href="/contributing/submission-format">
+    See the exact Markdown format your entry must follow to pass validation.
+  </Card>
+  <Card title="feed.json data feed" icon="database" href="/data/feed-json">
+    Access all 1,628+ entries as structured JSON for programmatic use.
+  </Card>
+</CardGroup>

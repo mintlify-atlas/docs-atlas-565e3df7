@@ -1,0 +1,108 @@
+---
+title: 'Running the Developer Portfolios Test Suite Locally'
+description: 'Run the Developer Portfolios test suite locally or in CI using run_tests.py. Covers all six test files, verbosity options, exit codes, and CI integration.'
+---
+
+The project ships a Python test suite that verifies the automation scripts produce correct output. Tests cover alphabetical sorting, emoji handling, feed generation, duplicate removal, and the end-to-end pipeline. Running them locally before opening a pull request catches regressions before CI does.
+
+## Running the tests
+
+Use `run_tests.py` at the repository root to discover and execute all tests in the `tests/` directory.
+
+<Steps>
+  <Step title="Run tests in normal mode">
+    ```bash
+    python run_tests.py
+    ```
+
+    This runs all discovered tests and prints a summary. A single `.` is printed per passing test.
+  </Step>
+
+  <Step title="Run tests in verbose mode">
+    ```bash
+    python run_tests.py -v
+    ```
+
+    Verbose mode (`-v` or `--verbose`) prints each test name and its result as it runs, making it easier to identify which specific test failed.
+
+    ```
+    test_entries_sorted_within_section (tests.test_alphabetical.TestSortListsAlphabetically) ... ok
+    test_emoji_detected_in_name (tests.test_emoji_detection.TestHasEmoji) ... ok
+    test_feed_output_matches_expected (tests.test_feed_json.TestCreateFeedJson) ... ok
+    ...
+    ----------------------------------------------------------------------
+    Ran 24 tests in 0.043s
+
+    OK
+    ```
+  </Step>
+</Steps>
+
+## Exit codes
+
+| Exit code | Meaning |
+|---|---|
+| `0` | All tests passed. |
+| `1` | One or more tests failed or raised an error. |
+
+Scripts and CI pipelines can rely on these exit codes to gate further steps:
+
+```bash
+python run_tests.py || echo "Tests failed — fix before merging"
+```
+
+## Discovery rules
+
+`run_tests.py` uses Python's built-in `unittest` discovery. It scans the `tests/` directory for files matching the pattern `test_*.py` and runs every method whose name starts with `test_`.
+
+```python
+loader = unittest.TestLoader()
+suite = loader.discover(start_dir='tests', pattern='test_*.py')
+runner = unittest.TextTestRunner(verbosity=verbosity)
+result = runner.run(suite)
+return 0 if result.wasSuccessful() else 1
+```
+
+You do not need to install any additional testing framework — `unittest` is part of the Python standard library.
+
+<Info>
+  Python 3.6 or later is required. No third-party packages are needed to run the tests.
+</Info>
+
+## Test files
+
+<AccordionGroup>
+  <Accordion title="tests/test_alphabetical.py">
+    Tests for `sort_lists_alphabetically()` and `validate_section_placement()` in `src/alphabetical.py`. Verifies that entries within each `## A`–`## Z` section are sorted correctly, that misplaced entries are moved to the right section, and that edge cases such as single-entry sections are handled.
+  </Accordion>
+
+  <Accordion title="tests/test_emoji_detection.py">
+    Tests for `has_emoji()`. Checks that emoji characters (including multi-codepoint sequences and skin-tone modifiers) are correctly detected, and that plain ASCII and Unicode letters without emoji are not falsely flagged.
+  </Accordion>
+
+  <Accordion title="tests/test_feed_json.py">
+    Tests for `extract_portfolio_data()` and `create_feed_json()` in `src/generate_feed.py`. Verifies that entries with and without taglines are parsed correctly, that non-matching lines are skipped, and that the output JSON structure matches the expected schema.
+  </Accordion>
+
+  <Accordion title="tests/test_fullstack_variants.py">
+    Tests for the "Full-Stack" normalization step. Ensures that `Fullstack`, `Full-Stack`, `full stack`, and other variants are all converted to `Full Stack` in both link text and tagline fields.
+  </Accordion>
+
+  <Accordion title="tests/test_main_e2e.py">
+    End-to-end tests that run the full `alphabetical.py` pipeline against fixture README inputs and verify that the output README and `feed.json` match expected snapshots. These tests catch regressions that unit tests for individual functions might miss.
+  </Accordion>
+
+  <Accordion title="tests/test_remove_emoji.py">
+    Tests for `remove_emoji_from_lines()`. Confirms that emoji are stripped from link text and adjacent tagline descriptions, that non-emoji Unicode characters are preserved, and that the surrounding Markdown link syntax remains valid after removal.
+  </Accordion>
+</AccordionGroup>
+
+## CI integration
+
+Tests run automatically on every pull request via GitHub Actions. The same `python run_tests.py` command is used in CI, so local results match what CI will report.
+
+The repository also runs a separate link-checker workflow (`.github/workflows/link-checker.yml`) using [lychee](https://github.com/lycheeverse/lychee) to verify that every URL in `README.md` resolves successfully. This is a distinct check from the unit tests — a PR can pass all unit tests and still be blocked if it introduces a broken URL.
+
+<Tip>
+  Run `python run_tests.py -v` locally before pushing. Verbose output makes it much faster to pinpoint a failure than reading through CI logs after the fact.
+</Tip>

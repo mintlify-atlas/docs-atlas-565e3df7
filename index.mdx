@@ -1,97 +1,54 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "Developer Portfolios: 1600+ Portfolios for Inspiration"
+description: "A community-curated collection of developer portfolio websites. Browse for inspiration, contribute your own, or consume the machine-readable feed."
 ---
 
-## Setting up
+Developer Portfolios is an open, community-maintained list of over 1,600 real developer portfolio websites — organized alphabetically and searchable by name. Whether you are building your first portfolio or looking to redesign an existing one, this collection gives you a wealth of real-world examples from engineers, designers, and developers of all specialties.
 
-Get your documentation site up and running in minutes.
-
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
-
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={2}>
+  <Card title="Browse the portfolios" icon="list" href="/browsing-portfolios">
+    Explore 1,600+ portfolios organized alphabetically, with role labels and direct links.
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="Add your portfolio" icon="plus" href="/contributing/how-to-contribute">
+    Open a pull request to submit your own portfolio to the list.
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="Submission format" icon="pen-to-square" href="/contributing/submission-format">
+    Learn the exact Markdown format required for a valid submission.
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="feed.json data feed" icon="code" href="/data/feed-json">
+    Consume all portfolio entries as structured JSON for your own projects.
   </Card>
-</Columns>
+</CardGroup>
 
-## Create beautiful pages
+## What is this project?
 
-Everything you need to create world-class documentation.
+Developer Portfolios is a GitHub repository started by [Emma Bostian](https://github.com/emmabostian). It hosts a single alphabetically-sorted `README.md` file containing links to developer portfolio websites, each optionally annotated with the owner's title or expertise. The list has grown to over 1,600 entries contributed by developers from around the world.
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+<Steps>
+  <Step title="Find inspiration">
+    Browse the [full portfolio list](https://github.com/emmabostian/developer-portfolios) on GitHub, or jump to a letter section using the alphabetical index at the top of the README.
+  </Step>
+  <Step title="Add your portfolio">
+    Fork the repository, add your entry in alphabetical order using the correct Markdown format, then open a pull request.
+  </Step>
+  <Step title="Use the data feed">
+    Fetch `feed.json` to get all entries as structured JSON — useful for building portfolio discovery tools, search pages, or statistics dashboards.
+  </Step>
+</Steps>
 
-## Need inspiration?
+## Key features
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+<CardGroup cols={2}>
+  <Card title="Alphabetical organization" icon="arrow-down-a-z" href="/browsing-portfolios">
+    Every portfolio is sorted by name. Jump to any letter using the quick-links index.
+  </Card>
+  <Card title="Role & expertise labels" icon="tag" href="/contributing/submission-format">
+    Entries can include optional taglines describing the developer's specialty.
+  </Card>
+  <Card title="Automated maintenance" icon="robot" href="/data/automation-scripts">
+    Python scripts keep the list sorted, deduplicated, and normalized on every contribution.
+  </Card>
+  <Card title="Machine-readable feed" icon="database" href="/data/feed-json">
+    All entries are exported to `feed.json` automatically — ready to query or integrate.
+  </Card>
+</CardGroup>

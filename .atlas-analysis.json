@@ -1,0 +1,57 @@
+{
+  "projectType": "general",
+  "projectName": "Developer Portfolios",
+  "projectDescription": "A community-curated, alphabetically-organized list of 1600+ developer portfolio websites for inspiration, with automation scripts for maintenance and a machine-readable feed.json export.",
+  "theme": "willow",
+  "primaryColor": "#7c7c7c",
+  "lightColor": "#0a0a0a",
+  "darkColor": "#c7c7c7",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guide",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "browsing-portfolios"
+            ]
+          },
+          {
+            "group": "Contributing",
+            "pages": [
+              "contributing/how-to-contribute",
+              "contributing/submission-format",
+              "contributing/pull-request-guide"
+            ]
+          },
+          {
+            "group": "Data & Automation",
+            "pages": [
+              "data/feed-json",
+              "data/automation-scripts",
+              "data/running-tests"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "1600+ curated developer portfolio links organized alphabetically",
+    "Contributor-friendly: open pull requests to add your portfolio",
+    "Machine-readable feed.json export of all portfolio entries",
+    "Automated alphabetical sorting and deduplication via Python scripts",
+    "CI link-checking via GitHub Actions (lychee)",
+    "Optional taglines/expertise labels for each portfolio entry"
+  ],
+  "publicApiSurface": [
+    "feed.json — structured JSON list of all portfolios (name, url, tagline)",
+    "python src/alphabetical.py — sort, deduplicate, and normalize README.md",
+    "python src/generate_feed.py — regenerate feed.json from README.md",
+    "python run_tests.py — run the test suite",
+    "extract_portfolio_data(lines) — parse portfolio entries from README lines",
+    "create_feed_json(readme_path, output_path) — write feed.json from README"
+  ]
+}

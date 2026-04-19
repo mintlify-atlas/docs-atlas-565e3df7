@@ -1,0 +1,136 @@
+---
+title: 'Pull Request Guide: Submit Your Portfolio Step by Step'
+description: 'Step-by-step walkthrough for forking the repo, cloning locally, creating a branch, adding your entry, and submitting a pull request against master.'
+---
+
+This guide walks you through the complete process of submitting your portfolio — from forking the repository to getting your PR merged. If you have not read the [submission format](/contributing/submission-format) page yet, do that first so your entry is ready before you start.
+
+## Full submission walkthrough
+
+<Steps>
+  <Step title="Fork the repository">
+    Go to [github.com/emmabostian/developer-portfolios](https://github.com/emmabostian/developer-portfolios) and click the **Fork** button in the upper-right corner. GitHub creates a copy of the repository under your account at `https://github.com/yourUsername/developer-portfolios`.
+  </Step>
+  <Step title="Clone your fork">
+    Clone your fork to your local machine:
+
+    ```bash
+    git clone https://github.com/yourUsername/developer-portfolios.git
+    ```
+  </Step>
+  <Step title="Set up the upstream remote">
+    Add the original repository as an upstream remote so you can pull in future updates:
+
+    ```bash
+    git remote add upstream https://github.com/emmabostian/developer-portfolios.git
+    ```
+
+    Verify that both remotes are configured:
+
+    ```bash
+    git remote -v
+    ```
+  </Step>
+  <Step title="Sync your fork with upstream">
+    Before creating a branch, make sure your local `master` is up to date with the upstream repository:
+
+    <CodeGroup>
+
+    ```bash Rebase
+    git pull --rebase upstream master
+    ```
+
+    ```bash Merge
+    git merge upstream/master
+    ```
+
+    </CodeGroup>
+  </Step>
+  <Step title="Create a branch">
+    Create a new branch named after yourself. Use the `add/your-name` convention:
+
+    ```bash
+    git checkout -b add/your-name
+    git push origin add/your-name
+    ```
+
+    <Warning>
+      Never commit directly to `master`. Always work on a dedicated branch. This keeps your fork clean and makes it easy to incorporate upstream changes.
+    </Warning>
+  </Step>
+  <Step title="Add your entry to the README">
+    Open `README.md` and find the alphabetically correct position for your name. Add your entry on a new line following the required format:
+
+    ```markdown
+    - [Your Name](https://yoursite.dev) [Your Title | Your Expertise]
+    ```
+
+    See [submission format](/contributing/submission-format) for the full syntax reference, including which fields are required and what to avoid.
+  </Step>
+  <Step title="Commit your change">
+    Stage and commit the change with a descriptive message:
+
+    ```bash
+    git add README.md
+    git commit -m "Add site Your Name"
+    ```
+
+    Keep the commit message in the format `Add site NAME`. Do not include an issue number in the commit message.
+  </Step>
+  <Step title="Push your branch">
+    Push the branch to your fork:
+
+    ```bash
+    git push origin add/your-name
+    ```
+  </Step>
+  <Step title="Open a pull request">
+    Go to your fork on GitHub. You will see a prompt to open a pull request for your recently pushed branch. Click **Compare & pull request**.
+
+    - **Base repository**: `emmabostian/developer-portfolios`
+    - **Base branch**: `master`
+    - **Title**: `Add site Your Name`
+
+    Do not add an issue number to the PR title. Submit the PR.
+  </Step>
+</Steps>
+
+## After you submit
+
+Once your PR is open, the following happens:
+
+1. **CI checks run** — automated checks validate that your entry follows the required format. If a check fails, review the error output and push a fix to the same branch.
+2. **Maintainer review** — a maintainer reviews the PR. If changes are requested, make the requested formatting corrections and push to the same branch; do not open a new PR.
+3. **Merge and automation** — once approved, your PR is merged into `master`. An automation script re-sorts the list alphabetically, normalizes names, and updates `feed.json` with your entry.
+
+## Keeping your fork up to date
+
+If you plan to contribute again in the future, keep your fork in sync with upstream before creating a new branch:
+
+```bash
+git checkout master
+git pull --rebase upstream master
+git push origin master
+```
+
+## Cleaning up after a successful merge
+
+Once your PR is merged, delete your local and remote branches to keep things tidy:
+
+```bash
+git branch -D add/your-name
+git push origin --delete add/your-name
+```
+
+## If changes are requested
+
+Push additional commits to the same branch rather than opening a new PR:
+
+```bash
+# Make your edits to README.md, then:
+git add README.md
+git commit -m "Fix formatting for submission"
+git push origin add/your-name
+```
+
+The open PR will automatically update with the new commits.

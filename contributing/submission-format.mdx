@@ -1,0 +1,92 @@
+---
+title: 'Portfolio Entry Format: Name, URL, and Tagline Rules'
+description: 'Learn the exact Markdown format for a valid portfolio submission, including required fields, optional taglines, alphabetical ordering rules, and what to avoid.'
+---
+
+Every portfolio entry in the README follows a single, consistent Markdown format. Getting the format right means your pull request passes CI checks and can be merged without revision.
+
+## Entry format
+
+Add your entry as a Markdown list item on a single line:
+
+```markdown
+- [Your Name](portfolio-url) [Your Title | Your Expertise]
+```
+
+The second pair of square brackets — the tagline — is optional. A minimal entry with just a name and URL is perfectly valid:
+
+```markdown
+- [Your Name](portfolio-url)
+```
+
+## Required fields
+
+**Name** — your display name inside the first pair of square brackets. This is what appears as the link text in the rendered README.
+
+**URL** — your portfolio URL inside the parentheses immediately following your name. Only one URL per entry is allowed.
+
+## Optional tagline
+
+The tagline goes in the second set of square brackets after the URL. Use it to describe your role, specialty, or expertise. You can include multiple items separated by a `|` character:
+
+```markdown
+- [Your Name](https://yoursite.dev) [Frontend Developer | Open Source]
+```
+
+There is no enforced character limit, but keep taglines concise so they display well on the page.
+
+## Real examples
+
+The following entries are taken from the live README and show the range of valid formats:
+
+```markdown
+- [Brittany Chiang](https://brittanychiang.com)
+- [Ahmad Awais](https://ahmadawais.com)
+- [Aditya Seth](https://adityaseth.in) [Software Developer & DevOps Architect]
+- [Akash Rajpurohit](https://akashrajpurohit.com)
+- [Frances Coronel](https://francescoronel.com)
+- [Jatin Sharma](http://j471n.in)
+- [Dustin Brett](https://dustinbrett.com)
+- [Blake Karbon](https://balakekarbon.github.io) [Legacy Systems / COBOL, Firmware, AI / Big Data, and Full Stack Developer]
+```
+
+Notice that some entries have no tagline, some have a single role, and some list several specialties using `/` as an informal separator within the tagline text.
+
+## Alphabetical ordering
+
+<Warning>
+  Your entry **must** be placed in alphabetical order by last name (or first name if you go by a single name or moniker). PRs that insert entries out of order will not be merged until the placement is corrected.
+</Warning>
+
+To find the right location, scan the list for the section that matches the first letter of the name you are submitting. Insert your entry so that the names above and below it are alphabetically adjacent.
+
+## Automation applied at merge time
+
+When your PR is merged, a Python script runs and applies the following transformations automatically:
+
+- **Title-casing** — your name is normalized to title case (e.g. `jane doe` becomes `Jane Doe`).
+- **Normalization** — "Full-Stack" is normalized to "Full Stack".
+- **Deduplication** — duplicate URLs are removed automatically.
+- **Re-sorting** — the full list is re-sorted alphabetically.
+
+You do not need to worry about these transformations, but be aware that your entry may look slightly different after the script runs.
+
+## What not to do
+
+The following will cause CI to fail or your PR to be rejected:
+
+- **Emoji in link text** — do not put emoji inside the square brackets that contain your name. The CI pipeline strips emoji automatically, but entries with emoji in the name field are flagged.
+- **Multiple URLs** — each entry must have exactly one URL. Do not add secondary links inside the tagline.
+- **Duplicate URLs** — if your URL already exists in the list, the deduplication script will remove the duplicate. Check the README before submitting to avoid this.
+- **Entries not in alphabetical order** — placing your entry in the wrong position is the most common reason PRs require changes.
+- **Relative or non-public URLs** — your URL must be a publicly accessible `http://` or `https://` address.
+
+## Putting it all together
+
+A complete, valid entry looks like this:
+
+```markdown
+- [Jane Doe](https://janedoe.dev) [Full Stack Developer | React, Node.js]
+```
+
+Once you have your entry formatted correctly, follow the [pull request guide](/contributing/pull-request-guide) to submit it.

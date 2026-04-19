@@ -1,0 +1,64 @@
+---
+title: 'How to Add Your Portfolio to Developer Portfolios List'
+description: 'Learn how to submit your portfolio to the community-curated list. You need a GitHub account, Git, and about five minutes to open a pull request.'
+---
+
+Developer Portfolios is a community-driven project — every entry on the list was submitted by a developer just like you. Contributing is straightforward: you fork the repository, add one line to the README in the correct format, and open a pull request. Once your PR is reviewed and merged, your portfolio joins over 1,600 others.
+
+## Prerequisites
+
+Before you start, make sure you have the following:
+
+- A **GitHub account** — required to fork the repository and open a pull request.
+- **Git** installed on your system, or a Git client of your choice.
+- A public portfolio URL you want to add.
+
+## Contribution process at a glance
+
+<Steps>
+  <Step title="Fork the repository">
+    Create your own copy of [emmabostian/developer-portfolios](https://github.com/emmabostian/developer-portfolios) on GitHub by clicking the **Fork** button.
+  </Step>
+  <Step title="Clone your fork">
+    Clone your forked repository to your local machine so you can make changes.
+  </Step>
+  <Step title="Create a branch">
+    Create a new branch named after yourself, for example `add/jane-doe`. Never edit directly on `master`.
+  </Step>
+  <Step title="Add your entry">
+    Add your portfolio entry to the README in alphabetical order using the required Markdown format. See [Submission format](/contributing/submission-format) for the exact syntax and rules.
+  </Step>
+  <Step title="Commit and push">
+    Commit your change with a message like `Add site Jane Doe`, then push your branch to your fork.
+  </Step>
+  <Step title="Open a pull request">
+    Open a PR against the `master` branch of the upstream repository. Title it `Add site NAME`. See [Pull request guide](/contributing/pull-request-guide) for step-by-step instructions.
+  </Step>
+</Steps>
+
+## Why contribute?
+
+The list is entirely community-maintained — there is no curated or paid placement. By adding your portfolio you:
+
+- Give other developers a real example to learn from and be inspired by.
+- Make your work discoverable to anyone browsing the repository or consuming `feed.json`.
+- Join a growing, open dataset of developer portfolios used by the community to build tools and dashboards.
+
+## What happens after you submit?
+
+When you open a pull request, automated CI checks run to validate formatting. If the checks pass, a maintainer reviews your PR. Once merged, an automation script re-sorts the list alphabetically, normalizes names to title case, and updates `feed.json` with your entry.
+
+<Note>
+  The automation will title-case your name and normalize "Full-Stack" to "Full Stack". You do not need to do this manually, but make sure your entry otherwise follows the required format.
+</Note>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Submission format" icon="pen-to-square" href="/contributing/submission-format">
+    The exact Markdown format, required fields, and rules for your portfolio entry.
+  </Card>
+  <Card title="Pull request guide" icon="code-pull-request" href="/contributing/pull-request-guide">
+    Step-by-step instructions for forking, branching, and opening your PR.
+  </Card>
+</CardGroup>
